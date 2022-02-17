@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <wildcardResourcePatterns>
+      <entry name="!?*.java" />
+      <entry name="!?*.form" />
+      <entry name="!?*.class" />
+      <entry name="!?*.groovy" />
+      <entry name="!?*.scala" />
+      <entry name="!?*.flex" />
+      <entry name="!?*.kt" />
+      <entry name="!?*.clj" />
+    </wildcardResourcePatterns>
+    <bytecodeTargetLevel target="17">
+      <module name="File_Server.File_Server-task-build-classes-java.main" target="11" />
+      <module name="File_Server.File_Server-task-build-generated-sources-annotationProcessor-java.main" target="11" />
+      <module name="File_Server.File_Server-task-build-generated-sources-headers-java.main" target="11" />
+      <module name="File_Server.File_Server-task-build-reports-tests.main" target="11" />
+      <module name="File_Server.File_Server-task-build-test-results.main" target="11" />
+      <module name="File_Server.File_Server-task-build-tmp.main" target="11" />
+      <module name="File_Server.File_Server-task.main" target="11" />
+      <module name="File_Server.util.main" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

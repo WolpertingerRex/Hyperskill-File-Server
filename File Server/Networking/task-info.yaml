@@ -1,0 +1,208 @@
+type: edu
+files:
+- name: src/server/Main.java
+  visible: true
+  text: |-
+    package server;
+
+    public class Main {
+
+        public static void main(String[] args) {
+            System.out.println("Hello, world!");
+        }
+    }
+  learner_created: false
+- name: test/FileServerTest.java
+  visible: false
+  text: |
+    import org.hyperskill.hstest.dynamic.input.DynamicTestingMethod;
+    import org.hyperskill.hstest.exception.outcomes.WrongAnswer;
+    import org.hyperskill.hstest.stage.StageTest;
+    import org.hyperskill.hstest.testcase.CheckResult;
+    import org.hyperskill.hstest.testing.TestedProgram;
+
+
+    public class FileServerTest extends StageTest<String> {
+
+        @DynamicTestingMethod
+        CheckResult test() throws InterruptedException {
+
+            TestedProgram client = new TestedProgram("client");
+            TestedProgram server = new TestedProgram("server");
+            server.setReturnOutputAfterExecution(true);
+
+            server.startInBackground();
+
+            Thread.sleep(1000);
+            String serverOutput = server.getOutput().trim();
+
+            String serverStartedMessage = "Server started!";
+            if (!serverOutput.equals(serverStartedMessage)) {
+                throw new WrongAnswer("Server output should be \"" + serverStartedMessage + "\" until the client connects!");
+            }
+
+            String clientOutput = client.start().trim();
+            serverOutput = server.getOutput().trim();
+
+            if (clientOutput.isEmpty()) {
+                return CheckResult.wrong("Client output shouldn't be empty!");
+            }
+
+            if (serverOutput.equals(serverStartedMessage)) {
+                return CheckResult.wrong("After the client connects to the server you should output the received data!");
+            }
+
+            if (!serverOutput.contains("Received: Give me everything you have!")) {
+                return CheckResult.wrong("Server output should contain \"Received: Give me everything you have!\"");
+            }
+
+            if (!serverOutput.contains("Sent: All files were sent!")) {
+                return CheckResult.wrong("Server output should contain \"Sent: All files were sent!\"");
+            }
+
+            if (serverOutput.indexOf("Sent: All files were sent!") < serverOutput.indexOf("Received: Give me everything you have!")) {
+                return CheckResult.wrong("The server should print \"Sent: All files were sent!\" only after " +
+                    "\"Received: Give me everything you have!\" was printed!");
+            }
+
+            if (!clientOutput.contains("Sent: Give me everything you have!")) {
+                return CheckResult.wrong("Client output should contain \"Sent: Give me everything you have!\"");
+            }
+
+            if (!clientOutput.contains("Received: All files were sent!")) {
+                return CheckResult.wrong("Client output should contain \"Received: All files were sent!\"");
+            }
+
+            if (clientOutput.indexOf("Received: All files were sent!") < clientOutput.indexOf("Sent: Give me everything you have!")) {
+                return CheckResult.wrong("The client should print \"Received: All files were sent!\" only after " +
+                    "\"Sent: Give me everything you have!\" was printed!");
+            }
+
+            return CheckResult.correct();
+        }
+    }
+  learner_created: false
+- name: src/server/ConsoleWriter.java
+  visible: true
+  text: |
+    package server;
+
+    import java.util.Scanner;
+
+    public class ConsoleHelper {
+        private static final Scanner scanner = new Scanner(System.in);
+
+        public static void printMessage(String message){
+            System.out.println(message);
+        }
+
+        public static String readString(){
+            return scanner.nextLine();
+        }
+    }
+  learner_created: true
+- name: src/server/Operation.java
+  visible: true
+  text: |
+    package server;
+
+    public enum Operation {
+        ADD,
+        GET,
+        DELETE,
+        EXIT
+    }
+  learner_created: true
+- name: src/server/FileManager.java
+  visible: true
+  text: |
+    package server;
+
+
+    import java.util.HashSet;
+    import java.util.Set;
+
+    import static server.ConsoleHelper.*;
+
+    public class FileManager {
+       private Set<String> files;
+
+        public FileManager() {
+            files = new HashSet<>();
+
+        }
+
+        private void execute(String command, String filename){
+            switch (command){
+                case "add": add(filename);
+                break;
+                case "get" : get(filename);
+                break;
+                case "delete" : delete(filename);
+                break;
+                case "exit" : exit();
+                break;
+            }
+        }
+
+        private void exit(){
+            System.exit(0);
+        }
+
+        private boolean isValid(String filename){
+            String pattern = "^file(1[0]|[1-9])$";
+            return filename.matches(pattern);
+        }
+
+          private void add(String filename){
+            if (files.size() < 10 && !files.contains(filename) && isValid(filename)) {
+                files.add(filename);
+                printMessage("The file "
+                        + filename + " added successfully");
+            }
+            else printMessage("Cannot add the file " + filename);
+        }
+
+        private void delete(String filename){
+            if (!files.contains(filename)){
+                printMessage("The file " + filename + " not found");
+            }
+            else {
+                files.remove(filename);
+                printMessage("The file " + filename + " was deleted");
+            }
+        }
+
+        private void get(String filename){
+            if(!files.contains(filename)){
+                printMessage("The file " + filename + " not found");
+            }
+            else {
+                printMessage("The file " + filename + " was sent");
+            }
+        }
+
+        public void init(){
+            while (true){
+                String[] input = readString().split(" ");
+                String command = input[0];
+                String filename = null;
+                if (input.length > 1) {
+                    filename = input[1];
+                }
+                execute(command, filename);
+            }
+        }
+
+
+    }
+  learner_created: true
+- name: src/client/Main.java
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/5426#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 16 Feb 2022 11:49:14 UTC
+record: 2

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="FileServerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-02-16T19:58:10" hostname="NADEJDA" time="1.145">
+  <properties/>
+  <testcase name="start" classname="FileServerTest" time="1.145"/>
+  <system-out><![CDATA[?[1;31m
+Start test 1?[0m
+Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+> exit
+The request was sent.
+Server started!
+Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+> 2
+Enter filename:
+> test_purpose_HX4PX9MKM.txt
+Enter file content: 
+> X19FQBS
+The request was sent.
+E:\Программирование\File Server\File Server\task\src\server\data\test_purpose_HX4PX9MKM.txt
+The response says that file was created!
+Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+> 2
+Enter filename:
+> test_purpose_HX4PX9MKM.txt
+Enter file content: 
+> X19FQBS
+The request was sent.
+E:\Программирование\File Server\File Server\task\src\server\data\test_purpose_HX4PX9MKM.txt
+The response says that creating the file was forbidden!
+Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+> 1
+Enter filename:
+> test_purpose_HX4PX9MKM.txt
+The request was sent.
+The content of the file is: X19FQBS
+Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+> 1
+Enter filename:
+> test_purpose_ZLJ4OSDLG.txt
+The request was sent.
+The response says that the file was not found!
+Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+> 3
+Enter filename:
+> test_purpose_DDJ7TQZR.txt
+The request was sent.
+The response says that the file was not found!
+Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+> 3
+Enter filename:
+> test_purpose_HX4PX9MKM.txt
+The request was sent.
+The response says that the file was successfully deleted!
+Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+> exit
+The request was sent.
+]]></system-out>
+  <system-err><![CDATA[java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:643)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:388)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:274)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:167)
+	at server.Server.runServer(Server.java:13)
+	at server.Main.main(Main.java:10)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.invokeMain(MainMethodExecutor.java:172)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.lambda$launch$0(MainMethodExecutor.java:199)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at java.base/java.io.DataInputStream.readUnsignedShort(DataInputStream.java:343)
+	at java.base/java.io.DataInputStream.readUTF(DataInputStream.java:595)
+	at java.base/java.io.DataInputStream.readUTF(DataInputStream.java:570)
+	at client.Client.runClient(Client.java:30)
+	at client.Main.main(Main.java:11)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.invokeMain(MainMethodExecutor.java:172)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.lambda$launch$0(MainMethodExecutor.java:199)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+java.io.EOFException
+	at java.base/java.io.DataInputStream.readUnsignedShort(DataInputStream.java:346)
+	at java.base/java.io.DataInputStream.readUTF(DataInputStream.java:595)
+	at java.base/java.io.DataInputStream.readUTF(DataInputStream.java:570)
+	at client.Client.runClient(Client.java:30)
+	at client.Main.main(Main.java:11)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.invokeMain(MainMethodExecutor.java:172)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.lambda$launch$0(MainMethodExecutor.java:199)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+]]></system-err>
+</testsuite>
