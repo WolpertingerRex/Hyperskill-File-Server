@@ -7,29 +7,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.Callable;
 
 
-public class FileManager {
-
-    private final static FileManager ourInstance = new FileManager();
-
-    public static FileManager getInstance() {
-        return ourInstance;
-    }
-
-    private FileManager() {
-    }
+public class FileManager implements Callable<Response> {
 
     private final String fileStorage = "E://Программирование/File Server/File Server/task/src/server/data/";
+    private Request request;
 
-    // fileStorage = System.getProperty("user.dir") +
-    //    File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
-
-
-    private void exit() {
-        System.exit(0);
+    public void setRequest(Request request) {
+        this.request = request;
     }
 
 
@@ -38,17 +26,17 @@ public class FileManager {
         String filename = request.getFilename();
         byte[] content = request.getContent();
 
-        Random random = new Random();
+
         int id = 0;
         while (FileStorage.getAllFiles().containsKey(id)) {
-            id = random.nextInt(10000);
+            id++;
         }
 
         if (filename.isEmpty()) filename = "file" + id;
         FileStorage.addToAllFiles(id, filename);
 
 
-      try {
+        try {
             FileHelper.writeContent(fileStorage, filename, content);
             response = new Response(ResponseType.SUCCESS);
             response.setId(id);
@@ -96,16 +84,14 @@ public class FileManager {
     }
 
 
-    public Response processRequest(Request request) {
+    public Response processRequest() {
         RequestType type = request.getType();
         FileStorage.load();
+
 
         Response response = null;
 
         switch (type) {
-            case EXIT:
-                exit();
-                break;
             case PUT:
                 response = add(request);
                 break;
@@ -118,5 +104,10 @@ public class FileManager {
         }
         FileStorage.save();
         return response;
+    }
+
+    @Override
+    public Response call() {
+        return processRequest();
     }
 }

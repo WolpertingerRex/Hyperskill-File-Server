@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">1.145s</div>
+<div class="counter">12.168s</div>
 <p>duration</p>
 </div>
 </td>
@@ -82,7 +82,7 @@
 </thead>
 <tr>
 <td class="success">start</td>
-<td class="success">1.145s</td>
+<td class="success">12.168s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -92,53 +92,125 @@
 <span class="code">
 <pre>?[1;31m
 Start test 1?[0m
-Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
 &gt; exit
 The request was sent.
+?[1;31m
+Start test 2?[0m
+?[1;31m
+Start test 3?[0m
 Server started!
-Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
 &gt; 2
 Enter filename:
-&gt; test_purpose_HX4PX9MKM.txt
-Enter file content: 
-&gt; X19FQBS
+&gt; test_purpose_test1.txt
+Enter name of the file to be saved on server:
+&gt; 
 The request was sent.
-E:\Программирование\File Server\File Server\task\src\server\data\test_purpose_HX4PX9MKM.txt
-The response says that file was created!
-Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+200
+Response says that file is saved! ID = 7
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
 &gt; 2
 Enter filename:
-&gt; test_purpose_HX4PX9MKM.txt
-Enter file content: 
-&gt; X19FQBS
+&gt; test_purpose_test2.txt
+Enter name of the file to be saved on server:
+&gt; test_purpose_newFile.txt
 The request was sent.
-E:\Программирование\File Server\File Server\task\src\server\data\test_purpose_HX4PX9MKM.txt
-The response says that creating the file was forbidden!
-Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+200
+Response says that file is saved! ID = 8
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; 1
+Do you want to get the file by name or by id (1 - name, 2 - id):
 &gt; 1
 Enter filename:
-&gt; test_purpose_HX4PX9MKM.txt
+&gt; test_purpose_notExist.txt
 The request was sent.
-The content of the file is: X19FQBS
-Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+404
+The response says that this file is not found!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; 1
+Do you want to get the file by name or by id (1 - name, 2 - id):
+&gt; 2
+Enter id:
+&gt; 7511
+The request was sent.
+404
+The response says that this file is not found!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; 1
+Do you want to get the file by name or by id (1 - name, 2 - id):
 &gt; 1
 Enter filename:
-&gt; test_purpose_ZLJ4OSDLG.txt
+&gt; test_purpose_newFile.txt
 The request was sent.
-The response says that the file was not found!
-Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
-&gt; 3
+200
+The file was downloaded! Specify a name for it:
+&gt; test_purpose_get.txt
+File saved on the hard drive!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; 1
+Do you want to get the file by name or by id (1 - name, 2 - id):
+&gt; 2
+Enter id:
+&gt; 7
+The request was sent.
+200
+The file was downloaded! Specify a name for it:
+&gt; test_purpose_get_id.txt
+File saved on the hard drive!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; exit
+The request was sent.
+?[1;31m
+Start test 4?[0m
+Server started!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; 1
+Do you want to get the file by name or by id (1 - name, 2 - id):
+&gt; 1
 Enter filename:
-&gt; test_purpose_DDJ7TQZR.txt
+&gt; test_purpose_newFile.txt
 The request was sent.
-The response says that the file was not found!
-Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+200
+The file was downloaded! Specify a name for it:
+&gt; test_purpose_get_after_restart.txt
+File saved on the hard drive!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; 1
+Do you want to get the file by name or by id (1 - name, 2 - id):
+&gt; 2
+Enter id:
+&gt; 7
+The request was sent.
+200
+The file was downloaded! Specify a name for it:
+&gt; test_purpose_get_by_id_after_restart.txt
+File saved on the hard drive!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; exit
+The request was sent.
+?[1;31m
+Start test 5?[0m
+Server started!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
 &gt; 3
+Do you want to get the file by name or by id (1 - name, 2 - id):
+&gt; 1
 Enter filename:
-&gt; test_purpose_HX4PX9MKM.txt
+&gt; test_purpose_newFile.txt
 The request was sent.
+200
 The response says that the file was successfully deleted!
-Enter action (1 - get a file, 2 - create a file, 3 - delete a file):
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
+&gt; 3
+Do you want to get the file by name or by id (1 - name, 2 - id):
+&gt; 2
+Enter id:
+&gt; 7
+The request was sent.
+200
+The response says that the file was successfully deleted!
+Enter action (1 - get a file, 2 - save a file, 3 - delete a file):
 &gt; exit
 The request was sent.
 </pre>
@@ -155,7 +227,7 @@ The request was sent.
 	at java.base/java.net.ServerSocket.bind(ServerSocket.java:388)
 	at java.base/java.net.ServerSocket.&lt;init&gt;(ServerSocket.java:274)
 	at java.base/java.net.ServerSocket.&lt;init&gt;(ServerSocket.java:167)
-	at server.Server.runServer(Server.java:13)
+	at server.Server.runServer(Server.java:18)
 	at server.Main.main(Main.java:10)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
@@ -168,17 +240,13 @@ The request was sent.
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-java.net.SocketException: Connection reset
-	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
-	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
-	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
-	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
-	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
-	at java.base/java.io.DataInputStream.readUnsignedShort(DataInputStream.java:343)
-	at java.base/java.io.DataInputStream.readUTF(DataInputStream.java:595)
-	at java.base/java.io.DataInputStream.readUTF(DataInputStream.java:570)
-	at client.Client.runClient(Client.java:30)
-	at client.Main.main(Main.java:11)
+java.io.EOFException
+	at java.base/java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:3225)
+	at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1695)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:514)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:472)
+	at client.Client.runClient(Client.java:40)
+	at client.Main.main(Main.java:10)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -191,11 +259,48 @@ java.net.SocketException: Connection reset
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 java.io.EOFException
-	at java.base/java.io.DataInputStream.readUnsignedShort(DataInputStream.java:346)
-	at java.base/java.io.DataInputStream.readUTF(DataInputStream.java:595)
-	at java.base/java.io.DataInputStream.readUTF(DataInputStream.java:570)
-	at client.Client.runClient(Client.java:30)
-	at client.Main.main(Main.java:11)
+	at java.base/java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:3225)
+	at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1695)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:514)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:472)
+	at client.Client.runClient(Client.java:40)
+	at client.Main.main(Main.java:10)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.invokeMain(MainMethodExecutor.java:172)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.lambda$launch$0(MainMethodExecutor.java:199)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+java.io.EOFException
+	at java.base/java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:3225)
+	at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1695)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:514)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:472)
+	at client.Client.runClient(Client.java:40)
+	at client.Main.main(Main.java:10)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.invokeMain(MainMethodExecutor.java:172)
+	at org.hyperskill.hstest.testing.execution.MainMethodExecutor.lambda$launch$0(MainMethodExecutor.java:199)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+java.io.EOFException
+	at java.base/java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:3225)
+	at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1695)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:514)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:472)
+	at client.Client.runClient(Client.java:40)
+	at client.Main.main(Main.java:10)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -218,7 +323,7 @@ java.io.EOFException
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 7.3.3</a> at 16 февр. 2022 г., 22:58:11</p>
+<a href="http://www.gradle.org">Gradle 7.3.3</a> at 17 февр. 2022 г., 20:05:52</p>
 </div>
 </div>
 </body>

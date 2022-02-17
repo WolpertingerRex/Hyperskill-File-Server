@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 import static utils.ConsoleReader.*;
 import static utils.ConsoleWriter.*;
@@ -15,17 +16,13 @@ import static utils.ConsoleWriter.*;
 public class Client {
     private final String fileStorage = "E://Программирование/File Server/File Server/task/src/client/data/";
 
-/*  private final String fileStorage =    = System.getProperty("user.dir") +
-                    File.separator + "src" + File.separator + "client" + File.separator + "data" +
-                    File.separator;
-    */
 
     public void runClient(String ADDRESS, int PORT) {
         try (Socket socket = new Socket(ADDRESS, PORT)) {
 
             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-
+            output.flush();
 
             printMessage(START_DIALOG);
 
@@ -33,7 +30,8 @@ public class Client {
             Request request = formRequest(requestType);
 
             output.writeObject(request);
-
+            output.flush();
+            TimeUnit.MILLISECONDS.sleep(50);
 
             Response response = (Response) input.readObject();
             processResponse(response, requestType);
@@ -43,6 +41,8 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -98,6 +98,7 @@ public class Client {
                 }
 
                 String newfilename = getFileName(FILE_TO_BE_SAVED_ON_SERVER);
+                if(newfilename == null) newfilename = "";
                 result = new Request(requestType, newfilename);
                 result.setContent(content);
             }

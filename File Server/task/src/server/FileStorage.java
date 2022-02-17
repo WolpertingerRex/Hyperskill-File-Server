@@ -1,14 +1,17 @@
 package server;
 
 import java.io.*;
-import java.util.HashMap;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FileStorage implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static HashMap<Integer, String> allFiles = new HashMap<>();
+    private static ConcurrentHashMap<Integer, String> allFiles = new ConcurrentHashMap<>();
     private static final String dir = "E://Программирование/File Server/File Server/task/src/server/data/";
 
-    public static HashMap<Integer, String> getAllFiles() {
+    public static ConcurrentHashMap<Integer, String> getAllFiles() {
         return allFiles;
     }
 
@@ -20,8 +23,18 @@ public class FileStorage implements Serializable {
         allFiles.remove(id);
     }
 
-    public static void save(){
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(dir + "map"))) {
+
+
+    public static void save() {
+        String filename = dir + "map";
+        if (!Files.exists(Paths.get(filename))) {
+            try {
+                Files.createFile(Paths.get(filename));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(allFiles);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -30,16 +43,23 @@ public class FileStorage implements Serializable {
         }
     }
 
-    public static void load(){
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(dir + "map"))) {
-            allFiles = (HashMap<Integer, String>) ois.readObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+
+    public static void load() {
+        String filename = dir + "map";
+        if (Files.exists(Paths.get(filename))) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+                allFiles = (ConcurrentHashMap<Integer, String>) ois.readObject();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            allFiles = new ConcurrentHashMap<>();
         }
     }
+
 
 }

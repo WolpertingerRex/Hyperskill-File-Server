@@ -7,7 +7,7 @@ public class ConsoleWriter {
     public final static String FILE_TO_BE_SAVED_ON_SERVER = "Enter name of the file to be saved on server:";
     public static final String CHOOSE_ID = "Enter id:";
     public final static String REQUEST_SENT = "The request was sent.";
-    public final static String NOT_FOUND = "The response says that the file was not found!";
+    public final static String NOT_FOUND = "The response says that this file is not found!";
     public final static String SAVE_AS = "The file was downloaded! Specify a name for it:";
     public static final String SAVE_SUCCESS = "File saved on the hard drive!";
     public final static String CREATION_SUCCESS = "Response says that file is saved! ID = ";

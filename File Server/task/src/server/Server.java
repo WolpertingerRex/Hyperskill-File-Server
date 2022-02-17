@@ -9,25 +9,37 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.*;
 
 public class Server {
-    private FileManager manager;
+
 
     public void runServer(int PORT) {
         try (ServerSocket server = new ServerSocket(PORT)) {
             ConsoleWriter.printMessage("Server started!");
+            ExecutorService executor = Executors.newFixedThreadPool(4);
             while (true) {
                 try (Socket socket = server.accept();
                      ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
                      ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream())) {
-                     Request request = (Request) input.readObject();
 
-                    Response response = manager.processRequest(request);
+                    Request request = (Request) input.readObject();
+                    FileManager manager = new FileManager();
+                    manager.setRequest(request);
+                    Future<Response> future = executor.submit(manager);
+                    Response response = future.get();
 
                     if (response == null) {
-                        break;
+                        executor.shutdown();
+                        server.close();
                     } else output.writeObject(response);
+                    TimeUnit.MILLISECONDS.sleep(50);
+                    output.flush();
                 } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -35,8 +47,7 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
-    public void setManager(FileManager manager){
-        this.manager = manager;
-    }
+
 }

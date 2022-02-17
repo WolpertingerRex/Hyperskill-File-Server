@@ -23,6 +23,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/File Server/task/build/tmp/File_Server.File_Server-task-build-tmp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/File Server/task/build/tmp/File_Server.File_Server-task-build-tmp.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/File Server/task/build/tmp/File_Server.File_Server-task-build-tmp.test.iml" filepath="$PROJECT_DIR$/.idea/modules/File Server/task/build/tmp/File_Server.File_Server-task-build-tmp.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/File Server/task/File_Server.File_Server-task.main.iml" filepath="$PROJECT_DIR$/.idea/modules/File Server/task/File_Server.File_Server-task.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/File Server/task/File_Server.File_Server-task.test.iml" filepath="$PROJECT_DIR$/.idea/modules/File Server/task/File_Server.File_Server-task.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/File_Server.util.iml" filepath="$PROJECT_DIR$/.idea/modules/util/File_Server.util.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/File_Server.util.main.iml" filepath="$PROJECT_DIR$/.idea/modules/util/File_Server.util.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/File_Server.util.test.iml" filepath="$PROJECT_DIR$/.idea/modules/util/File_Server.util.test.iml" />

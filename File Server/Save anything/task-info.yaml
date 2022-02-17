@@ -12,6 +12,416 @@ files:
         }
     }
   learner_created: false
+- name: src/client/Client.java
+  visible: true
+  text: |
+    package client;
+
+    import server.Request;
+    import server.Response;
+
+    import java.io.DataInputStream;
+    import java.io.DataOutputStream;
+    import java.io.IOException;
+    import java.net.Socket;
+    import java.net.UnknownHostException;
+
+    import static client.ConsoleReader.*;
+    import static server.ConsoleWriter.*;
+
+
+    public class Client {
+
+        public void runClient(String ADDRESS, int PORT){
+            try(Socket socket = new Socket(ADDRESS, PORT)){
+
+                DataInputStream input = new DataInputStream(socket.getInputStream());
+                DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+
+                prompt();
+                Request requestType = getRequest();
+                String request = formRequest(requestType);
+
+                output.writeUTF(request);
+
+                String response = input.readUTF();
+                processResponse(response, requestType);
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void processResponse(String response, Request requestType){
+            String[] strings = response.split(" ");
+            Response responseName = Response.ofValue((strings[0]));
+
+            switch (responseName){
+                case SUCCESS: {
+                    switch (requestType){
+                        case PUT: creationSuccess();
+                        break;
+                        case DELETE: deletionSuccess();
+                        break;
+                        case GET: printContent(strings[1]);
+                        break;
+                    }
+                }
+                break;
+                case FORBIDDEN:
+                    creationFail();
+                    break;
+                case NOT_EXIST:
+                    notFound();
+                    break;
+            }
+        }
+
+
+        public String formRequest(Request requestType){
+
+            String result = "";
+
+            switch (requestType){
+                case PUT: {
+                    chooseFile();
+                    String filename = "";
+                    while (filename.isEmpty()) {
+                        filename= readString();
+                    }
+                    enterContent();
+                    String content = null;
+                    while(content == null){
+                        content = readString();
+                    }
+                    result = requestType.name() + " " + filename + " " + content;
+              }
+              break;
+                case GET:
+                case DELETE: {
+                    chooseFile();
+                    String filename = readString();
+                    result = requestType.name() + " " + filename;
+                }
+                break;
+                case EXIT: result = requestType.name();
+                break;
+            }
+            sentRequest();
+            return result;
+        }
+    }
+  learner_created: true
+- name: src/client/Main.java
+  visible: true
+  text: |
+    package client;
+
+
+
+    public class Main {
+        private static final String ADDRESS= "127.0.0.1";
+        private static final int PORT = 34522;
+
+        public static void main(String[] args) {
+            Client client = new Client();
+            client.runClient(ADDRESS, PORT);
+
+        }
+    }
+  learner_created: true
+- name: src/server/Server.java
+  visible: true
+  text: |
+    package server;
+
+    import java.io.DataInputStream;
+    import java.io.DataOutputStream;
+    import java.io.IOException;
+    import java.net.ServerSocket;
+    import java.net.Socket;
+
+    public class Server {
+        private FileManager manager = new FileManager();
+
+        public void runServer(int PORT) {
+            try (ServerSocket server = new ServerSocket(PORT)) {
+                ConsoleWriter.printMessage("Server started!");
+                while (true) {
+                    try (Socket socket = server.accept();
+                         DataInputStream input = new DataInputStream(socket.getInputStream());
+                         DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
+                        String message = input.readUTF();
+
+                        String response = manager.processRequest(message);
+
+                        if (response.isEmpty()) {
+                            break;
+                        } else output.writeUTF(response);
+                    }
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+  learner_created: true
+- name: src/server/FileManager.java
+  visible: true
+  text: |
+    package server;
+
+
+    import java.io.BufferedWriter;
+    import java.io.File;
+    import java.io.IOException;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.nio.file.Paths;
+
+
+    public class FileManager {
+       private final String fileStorage;
+
+        public FileManager() {
+         // fileStorage = "E://Программирование/File Server/File Server/task/src/server/data";
+           fileStorage = System.getProperty("user.dir") +
+                        File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
+        }
+
+          private void exit(){
+            System.exit(0);
+        }
+
+
+        private String add(String filename, String content){
+            Path path = Paths.get(fileStorage + "//" + filename);
+            System.out.println(path.toString());
+            try {
+                Path newfile = Files.createFile(path);
+                BufferedWriter writer = Files.newBufferedWriter(newfile);
+                writer.write(content);
+                writer.close();
+                return Response.SUCCESS.toString();
+            } catch (IOException e) {
+                return Response.FORBIDDEN.toString();
+            }
+        }
+
+        private String delete(String filename){
+            Path path = Paths.get(fileStorage + "//" + filename);
+            try {
+                boolean success = Files.deleteIfExists(path);
+                if(success) return Response.SUCCESS.toString();
+                return Response.NOT_EXIST.toString();
+            } catch (IOException e) {
+               return Response.NOT_EXIST.toString();
+            }
+        }
+
+        private String get(String filename){
+            Path path = Paths.get(fileStorage + "//" + filename);
+            StringBuilder sb = new StringBuilder();
+            try {
+                Files.readAllLines(path).forEach(sb::append);
+                return Response.SUCCESS.toString() + " " + sb;
+            } catch (IOException e) {
+                return Response.NOT_EXIST.toString();
+            }
+        }
+
+
+        public String processRequest(String request){
+            String[] strings = request.split(" ");
+            Request requestName = Request.valueOf(strings[0]);
+            String response = "";
+
+            switch (requestName){
+                case EXIT: exit();
+                break;
+                case PUT: {
+                    String filename = strings[1];
+                    String content = strings[2];
+                    response = add(filename, content);
+                }
+                break;
+                case GET: {
+                    String filename = strings[1];
+                    response = get(filename);
+                }
+                break;
+                case DELETE:{
+                    String filename = strings[1];
+                    response = delete(filename);
+                }
+                break;
+            }
+            return response;
+        }
+    }
+  learner_created: true
+- name: src/utils/RequestType.java
+  visible: true
+  text: |
+    package server;
+
+    public enum Request {
+        PUT,
+        GET,
+        DELETE,
+        EXIT
+    }
+  learner_created: true
+- name: src/utils/Request.java
+  visible: true
+  learner_created: true
+- name: src/utils/ConsoleReader.java
+  visible: true
+  text: |
+    package client;
+    import server.Request;
+
+    import java.util.Scanner;
+
+    public class ConsoleReader {
+        private static final Scanner scanner = new Scanner(System.in);
+
+
+        public static Request getRequest(){
+            int n = 0;
+            String answer = scanner.nextLine();
+            if (!answer.equals("exit")) n = Integer.parseInt(answer);
+
+            switch (n){
+                case 1 : return Request.GET;
+                case 2 :return Request.PUT;
+                case 3: return Request.DELETE;
+                case 0: return Request.EXIT;
+                default: return null;
+            }
+        }
+
+        public static String readString(){
+            return scanner.nextLine();
+        }
+    }
+  learner_created: true
+- name: src/utils/ConsoleWriter.java
+  visible: true
+  text: |
+    package server;
+
+
+
+    public class ConsoleWriter {
+
+
+        public static void printMessage(String message){
+            System.out.println(message);
+        }
+
+
+        public static void prompt(){
+            System.out.println("Enter action (1 - get a file, 2 - create a file, 3 - delete a file):");
+
+        }
+        public static  void  chooseFile(){
+            System.out.println("Enter filename:");
+        }
+
+        public static void enterContent(){
+            System.out.println("Enter file content: ");
+        }
+
+
+        public static void sentRequest(){
+            System.out.println("The request was sent.");
+        }
+
+        public static void notFound(){
+            System.out.println("The response says that the file was not found!");
+        }
+
+        public static void printContent(String content){
+            System.out.println("The content of the file is: " + content);
+        }
+
+        public static void creationSuccess(){
+            System.out.println("The response says that file was created!");
+        }
+
+        public static void creationFail(){
+            System.out.println("The response says that creating the file was forbidden!");
+        }
+
+        public static void deletionSuccess(){
+            System.out.println("The response says that the file was successfully deleted!");
+        }
+
+
+    }
+  learner_created: true
+- name: src/utils/ResponseType.java
+  visible: true
+  text: |
+    package server;
+
+    import java.util.Arrays;
+
+    public enum Response {
+        SUCCESS("200"),
+        NOT_EXIST("404"),
+        FORBIDDEN("403");
+
+        private String value;
+
+        Response(final String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static Response ofValue(String v){
+            for (Response x : Response.values()) {
+                if (x.getValue().equals(v)) {
+                    return x;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return this.getValue();
+        }
+    }
+  learner_created: true
+- name: src/utils/Response.java
+  visible: true
+  learner_created: true
+- name: src/utils/FileHelper.java
+  visible: true
+  learner_created: true
+- name: src/client/data/ScreenShot45.png
+  visible: true
+  learner_created: true
+- name: src/server/FileStorage.java
+  visible: true
+  learner_created: true
+- name: src/client/data/new_screenshot
+  visible: true
+  learner_created: true
+- name: src/client/data/hello
+  visible: true
+  learner_created: true
+- name: src/client/data/download
+  visible: true
+  learner_created: true
 - name: test/FileServerTest.java
   visible: false
   text: |+
@@ -296,257 +706,6 @@ files:
 
 
   learner_created: false
-- name: src/client/Client.java
-  visible: true
-  text: |
-    package client;
-
-    import server.Request;
-    import server.Response;
-
-    import java.io.DataInputStream;
-    import java.io.DataOutputStream;
-    import java.io.IOException;
-    import java.net.Socket;
-    import java.net.UnknownHostException;
-
-    import static client.ConsoleReader.*;
-    import static server.ConsoleWriter.*;
-
-
-    public class Client {
-
-        public void runClient(String ADDRESS, int PORT){
-            try(Socket socket = new Socket(ADDRESS, PORT)){
-
-                DataInputStream input = new DataInputStream(socket.getInputStream());
-                DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-
-                prompt();
-                Request requestType = getRequest();
-                String request = formRequest(requestType);
-
-                output.writeUTF(request);
-
-                String response = input.readUTF();
-                processResponse(response, requestType);
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void processResponse(String response, Request requestType){
-            String[] strings = response.split(" ");
-            Response responseName = Response.ofValue((strings[0]));
-
-            switch (responseName){
-                case SUCCESS: {
-                    switch (requestType){
-                        case PUT: creationSuccess();
-                        break;
-                        case DELETE: deletionSuccess();
-                        break;
-                        case GET: printContent(strings[1]);
-                        break;
-                    }
-                }
-                break;
-                case FORBIDDEN:
-                    creationFail();
-                    break;
-                case NOT_EXIST:
-                    notFound();
-                    break;
-            }
-        }
-
-
-        public String formRequest(Request requestType){
-
-            String result = "";
-
-            switch (requestType){
-                case PUT: {
-                    chooseFile();
-                    String filename = "";
-                    while (filename.isEmpty()) {
-                        filename= readString();
-                    }
-                    enterContent();
-                    String content = null;
-                    while(content == null){
-                        content = readString();
-                    }
-                    result = requestType.name() + " " + filename + " " + content;
-              }
-              break;
-                case GET:
-                case DELETE: {
-                    chooseFile();
-                    String filename = readString();
-                    result = requestType.name() + " " + filename;
-                }
-                break;
-                case EXIT: result = requestType.name();
-                break;
-            }
-            sentRequest();
-            return result;
-        }
-    }
-  learner_created: true
-- name: src/client/Main.java
-  visible: true
-  text: |
-    package client;
-
-
-
-    public class Main {
-        private static final String ADDRESS= "127.0.0.1";
-        private static final int PORT = 34522;
-
-        public static void main(String[] args) {
-            Client client = new Client();
-            client.runClient(ADDRESS, PORT);
-
-        }
-    }
-  learner_created: true
-- name: src/server/Server.java
-  visible: true
-  text: |
-    package server;
-
-    import java.io.DataInputStream;
-    import java.io.DataOutputStream;
-    import java.io.IOException;
-    import java.net.ServerSocket;
-    import java.net.Socket;
-
-    public class Server {
-        private FileManager manager = new FileManager();
-
-        public void runServer(int PORT) {
-            try (ServerSocket server = new ServerSocket(PORT)) {
-                ConsoleWriter.printMessage("Server started!");
-                while (true) {
-                    try (Socket socket = server.accept();
-                         DataInputStream input = new DataInputStream(socket.getInputStream());
-                         DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
-                        String message = input.readUTF();
-
-                        String response = manager.processRequest(message);
-
-                        if (response.isEmpty()) {
-                            break;
-                        } else output.writeUTF(response);
-                    }
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-  learner_created: true
-- name: src/server/FileManager.java
-  visible: true
-  text: |
-    package server;
-
-
-    import java.io.BufferedWriter;
-    import java.io.File;
-    import java.io.IOException;
-    import java.nio.file.Files;
-    import java.nio.file.Path;
-    import java.nio.file.Paths;
-
-
-    public class FileManager {
-       private final String fileStorage;
-
-        public FileManager() {
-         // fileStorage = "E://Программирование/File Server/File Server/task/src/server/data";
-           fileStorage = System.getProperty("user.dir") +
-                        File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
-        }
-
-          private void exit(){
-            System.exit(0);
-        }
-
-
-        private String add(String filename, String content){
-            Path path = Paths.get(fileStorage + "//" + filename);
-            System.out.println(path.toString());
-            try {
-                Path newfile = Files.createFile(path);
-                BufferedWriter writer = Files.newBufferedWriter(newfile);
-                writer.write(content);
-                writer.close();
-                return Response.SUCCESS.toString();
-            } catch (IOException e) {
-                return Response.FORBIDDEN.toString();
-            }
-        }
-
-        private String delete(String filename){
-            Path path = Paths.get(fileStorage + "//" + filename);
-            try {
-                boolean success = Files.deleteIfExists(path);
-                if(success) return Response.SUCCESS.toString();
-                return Response.NOT_EXIST.toString();
-            } catch (IOException e) {
-               return Response.NOT_EXIST.toString();
-            }
-        }
-
-        private String get(String filename){
-            Path path = Paths.get(fileStorage + "//" + filename);
-            StringBuilder sb = new StringBuilder();
-            try {
-                Files.readAllLines(path).forEach(sb::append);
-                return Response.SUCCESS.toString() + " " + sb;
-            } catch (IOException e) {
-                return Response.NOT_EXIST.toString();
-            }
-        }
-
-
-        public String processRequest(String request){
-            String[] strings = request.split(" ");
-            Request requestName = Request.valueOf(strings[0]);
-            String response = "";
-
-            switch (requestName){
-                case EXIT: exit();
-                break;
-                case PUT: {
-                    String filename = strings[1];
-                    String content = strings[2];
-                    response = add(filename, content);
-                }
-                break;
-                case GET: {
-                    String filename = strings[1];
-                    response = get(filename);
-                }
-                break;
-                case DELETE:{
-                    String filename = strings[1];
-                    response = delete(filename);
-                }
-                break;
-            }
-            return response;
-        }
-    }
-  learner_created: true
 - name: test/Utils.java
   visible: false
   text: |+
@@ -664,180 +823,46 @@ files:
 
 
   learner_created: false
-- name: src/utils/RequestType.java
-  visible: true
-  text: |
-    package server;
-
-    public enum Request {
-        PUT,
-        GET,
-        DELETE,
-        EXIT
-    }
-  learner_created: true
-- name: src/utils/Request.java
+- name: src/client/data/test
   visible: true
   learner_created: true
-- name: src/utils/ConsoleReader.java
-  visible: true
-  text: |
-    package client;
-    import server.Request;
-
-    import java.util.Scanner;
-
-    public class ConsoleReader {
-        private static final Scanner scanner = new Scanner(System.in);
-
-
-        public static Request getRequest(){
-            int n = 0;
-            String answer = scanner.nextLine();
-            if (!answer.equals("exit")) n = Integer.parseInt(answer);
-
-            switch (n){
-                case 1 : return Request.GET;
-                case 2 :return Request.PUT;
-                case 3: return Request.DELETE;
-                case 0: return Request.EXIT;
-                default: return null;
-            }
-        }
-
-        public static String readString(){
-            return scanner.nextLine();
-        }
-    }
-  learner_created: true
-- name: src/utils/ConsoleWriter.java
-  visible: true
-  text: |
-    package server;
-
-
-
-    public class ConsoleWriter {
-
-
-        public static void printMessage(String message){
-            System.out.println(message);
-        }
-
-
-        public static void prompt(){
-            System.out.println("Enter action (1 - get a file, 2 - create a file, 3 - delete a file):");
-
-        }
-        public static  void  chooseFile(){
-            System.out.println("Enter filename:");
-        }
-
-        public static void enterContent(){
-            System.out.println("Enter file content: ");
-        }
-
-
-        public static void sentRequest(){
-            System.out.println("The request was sent.");
-        }
-
-        public static void notFound(){
-            System.out.println("The response says that the file was not found!");
-        }
-
-        public static void printContent(String content){
-            System.out.println("The content of the file is: " + content);
-        }
-
-        public static void creationSuccess(){
-            System.out.println("The response says that file was created!");
-        }
-
-        public static void creationFail(){
-            System.out.println("The response says that creating the file was forbidden!");
-        }
-
-        public static void deletionSuccess(){
-            System.out.println("The response says that the file was successfully deleted!");
-        }
-
-
-    }
-  learner_created: true
-- name: src/utils/ResponseType.java
-  visible: true
-  text: |
-    package server;
-
-    import java.util.Arrays;
-
-    public enum Response {
-        SUCCESS("200"),
-        NOT_EXIST("404"),
-        FORBIDDEN("403");
-
-        private String value;
-
-        Response(final String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public static Response ofValue(String v){
-            for (Response x : Response.values()) {
-                if (x.getValue().equals(v)) {
-                    return x;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public String toString() {
-            return this.getValue();
-        }
-    }
-  learner_created: true
-- name: src/utils/Response.java
+- name: src/client/data/test2
   visible: true
   learner_created: true
-- name: src/utils/FileHelper.java
-  visible: true
-  learner_created: true
-- name: src/client/data/ScreenShot45.png
-  visible: true
-  learner_created: true
-- name: src/server/FileStorage.java
-  visible: true
-  learner_created: true
-- name: src/server/data/screenshot
-  visible: true
-  learner_created: true
-- name: src/client/data/new_screenshot
-  visible: true
-  learner_created: true
-- name: src/server/data/test.png
-  visible: true
-  learner_created: true
-- name: src/server/data/file0
+- name: src/client/data/kitty
   visible: true
   learner_created: true
 - name: src/server/data/map
   visible: true
   learner_created: true
-- name: src/client/data/hello
+- name: src/server/data/file0
   visible: true
   learner_created: true
-- name: src/server/data/test
+- name: src/server/data/file1
   visible: true
   learner_created: true
-- name: src/client/data/download
+- name: src/server/data/file2
+  visible: true
+  learner_created: true
+- name: src/server/data/file3
+  visible: true
+  learner_created: true
+- name: src/server/data/file4
+  visible: true
+  learner_created: true
+- name: src/server/data/file5
+  visible: true
+  learner_created: true
+- name: src/client/data/ololo
+  visible: true
+  learner_created: true
+- name: src/server/data/ololo
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/5428#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
+    Academy</a> to continue learning.
+  time: Thu, 17 Feb 2022 17:05:52 UTC
 record: -1
