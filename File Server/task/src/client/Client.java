@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import static utils.ConsoleReader.*;
@@ -36,13 +35,7 @@ public class Client {
             Response response = (Response) input.readObject();
             processResponse(response, requestType);
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -110,11 +103,11 @@ public class Client {
 
                 if (param) {
                     String filename = getFileName(CHOOSE_FILE_DIALOG);
-                    result = new Request(requestType, param, filename);
+                    result = new Request(requestType, true, filename);
                 } else {
                     printMessage(CHOOSE_ID);
                     int id = readInt();
-                    result = new Request(requestType, param, id);
+                    result = new Request(requestType, false, id);
                 }
 
             }

@@ -13,21 +13,4 @@ public enum ResponseType implements Serializable {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public static ResponseType ofValue(String v){
-        for (ResponseType x : ResponseType.values()) {
-            if (x.getValue().equals(v)) {
-                return x;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return this.getValue();
-    }
 }

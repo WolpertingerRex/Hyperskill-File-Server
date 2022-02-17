@@ -35,11 +35,7 @@ public class Server {
                     } else output.writeObject(response);
                     TimeUnit.MILLISECONDS.sleep(50);
                     output.flush();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (ClassNotFoundException | ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -47,7 +43,6 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }

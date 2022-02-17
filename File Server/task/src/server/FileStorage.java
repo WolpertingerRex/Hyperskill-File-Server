@@ -23,8 +23,6 @@ public class FileStorage implements Serializable {
         allFiles.remove(id);
     }
 
-
-
     public static void save() {
         String filename = dir + "map";
         if (!Files.exists(Paths.get(filename))) {
@@ -36,24 +34,17 @@ public class FileStorage implements Serializable {
         }
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(allFiles);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     public static void load() {
         String filename = dir + "map";
         if (Files.exists(Paths.get(filename))) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
                 allFiles = (ConcurrentHashMap<Integer, String>) ois.readObject();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         } else {

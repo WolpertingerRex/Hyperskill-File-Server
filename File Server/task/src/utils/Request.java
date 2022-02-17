@@ -4,14 +4,11 @@ import java.io.Serializable;
 
 public class Request implements Serializable {
     private static final long serialVersionUID = 1L;
-    private RequestType type;
+    private final RequestType type;
     private boolean isFileName;
     private String filename;
     private int id;
     private byte[] content;
-
-    public Request() {
-    }
 
     public Request(RequestType type) {
         this.type = type;
