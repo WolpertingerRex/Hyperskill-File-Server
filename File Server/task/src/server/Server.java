@@ -2,6 +2,7 @@ package server;
 
 import utils.ConsoleWriter;
 import utils.Request;
+import utils.RequestType;
 import utils.Response;
 
 import java.io.IOException;
@@ -24,17 +25,20 @@ public class Server {
                      ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream())) {
 
                     Request request = (Request) input.readObject();
-                    FileManager manager = new FileManager();
-                    manager.setRequest(request);
-                    Future<Response> future = executor.submit(manager);
-                    Response response = future.get();
-
-                    if (response == null) {
+                    if(request.getType().equals(RequestType.EXIT)) {
+                        socket.close();
                         executor.shutdown();
                         server.close();
-                    } else output.writeObject(response);
-                    TimeUnit.MILLISECONDS.sleep(50);
-                    output.flush();
+                    }
+                    else {
+                        FileManager manager = new FileManager();
+                        manager.setRequest(request);
+                        Future<Response> future = executor.submit(manager);
+                        Response response = future.get();
+
+                        output.writeObject(response);
+                        output.flush();
+                    }
                 } catch (ClassNotFoundException | ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Random;
 import java.util.concurrent.Callable;
 
 
 public class FileManager implements Callable<Response> {
 
-    private final String fileStorage = "E://Программирование/File Server/File Server/task/src/server/data/";
+    private final String fileStorage = FileStorage.getStorage();
     private Request request;
 
     public void setRequest(Request request) {
@@ -50,14 +49,15 @@ public class FileManager implements Callable<Response> {
         String filename;
         if (request.isFileName()) {
             filename = request.getFilename();
+            FileStorage.remove(filename);
         } else {
             filename = FileStorage.getAllFiles().get(request.getId());
+            FileStorage.remove(request.getId());
         }
 
         Path path = Paths.get(fileStorage + filename);
         try {
             boolean success = Files.deleteIfExists(path);
-            FileStorage.remove(request.getId());
             if (success) return new Response(ResponseType.SUCCESS);
             return new Response(ResponseType.NOT_EXIST);
         } catch (IOException e) {
@@ -87,7 +87,6 @@ public class FileManager implements Callable<Response> {
     public Response processRequest() {
         RequestType type = request.getType();
         FileStorage.load();
-
 
         Response response = null;
 

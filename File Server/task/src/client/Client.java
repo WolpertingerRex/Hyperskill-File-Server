@@ -2,6 +2,7 @@ package client;
 
 import utils.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,7 +14,8 @@ import static utils.ConsoleWriter.*;
 
 
 public class Client {
-    private final String fileStorage = "E://Программирование/File Server/File Server/task/src/client/data/";
+    private final String fileStorage = System.getProperty("user.dir") +
+            File.separator + "src" + File.separator + "client" + File.separator + "data" + File.separator;
 
 
     public void runClient(String ADDRESS, int PORT) {

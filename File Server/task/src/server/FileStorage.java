@@ -9,7 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FileStorage implements Serializable {
     private static final long serialVersionUID = 1L;
     private static ConcurrentHashMap<Integer, String> allFiles = new ConcurrentHashMap<>();
-    private static final String dir = "E://Программирование/File Server/File Server/task/src/server/data/";
+
+    private static final String dir = System.getProperty("user.dir") +
+    File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
 
     public static ConcurrentHashMap<Integer, String> getAllFiles() {
         return allFiles;
@@ -21,6 +23,12 @@ public class FileStorage implements Serializable {
 
     public static void remove(int id) {
         allFiles.remove(id);
+    }
+
+    public static void remove(String filename) {
+        allFiles.forEach((k,v)-> {
+            if(v.equals(filename)) allFiles.remove(k);
+        });
     }
 
     public static void save() {
@@ -50,6 +58,10 @@ public class FileStorage implements Serializable {
         } else {
             allFiles = new ConcurrentHashMap<>();
         }
+    }
+
+    public static String getStorage(){
+        return dir;
     }
 
 
